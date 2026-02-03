@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MyVideo — сравнение сайтов</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#111a2e;
+      --card2:#0f1930;
+      --text:#eaf0ff;
+      --muted:#b7c2e6;
+      --border:#243055;
+      --accent:#4aa3ff;
+      --good:#2bd576;
+      --danger:#ff5c5c;
+      --shadow: 0 14px 40px rgba(0,0,0,.35);
+      --radius:16px;
+      --radius2:12px;
+      --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:
+        radial-gradient(1200px 700px at 20% 0%, rgba(74,163,255,.20), transparent 55%),
+        radial-gradient(900px 600px at 90% 10%, rgba(43,213,118,.12), transparent 60%),
+        linear-gradient(180deg, #070b15, var(--bg));
+      color:var(--text);
+      min-height:100vh;
+      padding:28px 18px;
+    }
+
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+    }
+
+    header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:14px;
+    }
+
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    h1{
+      font-size:20px;
+      margin:0;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.35;
+      max-width:720px;
+    }
+
+    .hint{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      padding:10px 12px;
+      border-radius:12px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+      white-space:nowrap;
+      align-self:flex-start;
+    }
+
+    /* Tabs */
+    .tabs{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      padding:10px;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      box-shadow: 0 10px 28px rgba(0,0,0,.25);
+      overflow:auto;
+      scrollbar-width: thin;
+      margin-bottom:16px;
+    }
+    .tab{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(17,26,46,.65);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:13px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      flex: 0 0 auto;
+    }
+    .tab:active{ transform: translateY(1px); }
+    .tab[aria-selected="true"]{
+      background:rgba(74,163,255,.18);
+      border-color: rgba(74,163,255,.45);
+      box-shadow: 0 10px 24px rgba(74,163,255,.10);
+    }
+    .pill{
+      font-size:11px;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      color:var(--muted);
+      background:rgba(255,255,255,.06);
+    }
+    .pill.good{
+      border-color: rgba(43,213,118,.45);
+      background: rgba(43,213,118,.10);
+      color: #bff5d7;
+    }
+
+    /* Panels */
+    .panel{
+      display:none;
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      box-shadow: var(--shadow);
+      padding:18px;
+    }
+    .panel[aria-hidden="false"]{ display:block; }
+
+    /* "Browser bar" */
+    .browserbar{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.20);
+      margin-bottom:14px;
+    }
+    .dots{ display:flex; gap:6px; }
+    .dot{
+      width:10px; height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.16);
+    }
+    .address{
+      flex:1;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 10px;
+      border-radius:12px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:12px;
+      color: var(--muted);
+      overflow:hidden;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+    }
+    .lock{
+      color: var(--good);
+      font-weight:800;
+    }
+
+    /* Login card */
+    .grid{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:16px;
+    }
+    @media (max-width: 860px){
+      .grid{ grid-template-columns: 1fr; }
+      .hint{ white-space:normal; }
+    }
+
+    .card{
+      border-radius: var(--radius);
+      background: rgba(17,26,46,.75);
+      border:1px solid rgba(255,255,255,.10);
+      padding:18px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .logo{
+      width:36px; height:36px;
+      border-radius: 12px;
+      background:
+        radial-gradient(16px 16px at 30% 30%, rgba(255,255,255,.35), transparent 60%),
+        linear-gradient(135deg, rgba(74,163,255,.95), rgba(43,213,118,.85));
+      box-shadow: 0 10px 18px rgba(0,0,0,.25);
+    }
+    .brandname{
+      display:flex;
+      flex-direction:column;
+      line-height:1.1;
+    }
+    .brandname strong{
+      font-size:15px;
+      letter-spacing:.2px;
+    }
+    .brandname span{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .card h2{
+      margin:12px 0 6px;
+      font-size:18px;
+    }
+    .lead{
+      color: var(--muted);
+      font-size:13px;
+      line-height:1.45;
+      margin:0 0 14px;
+    }
+
+    label{
+      display:block;
+      font-size:12px;
+      color: var(--muted);
+      margin:12px 0 6px;
+    }
+    input{
+      width:100%;
+      padding:11px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      outline:none;
+    }
+    input:focus{
+      border-color: rgba(74,163,255,.55);
+      box-shadow: 0 0 0 3px rgba(74,163,255,.16);
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:12px;
+    }
+    .checkbox{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color: var(--muted);
+      font-size:12px;
+      user-select:none;
+    }
+    .checkbox input{ width:auto; }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:11px 14px;
+      border-radius: 12px;
+      border:1px solid rgba(74,163,255,.50);
+      background: rgba(74,163,255,.18);
+      color: var(--text);
+      font-weight:700;
+      cursor:pointer;
+      white-space:nowrap;
+      transition: transform .08s ease, background .2s ease;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn:hover{ background: rgba(74,163,255,.24); }
+
+    .foot{
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      color: var(--muted);
+      font-size:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+    }
+    a{
+      color: #cfe6ff;
+      text-decoration:none;
+      border-bottom:1px solid rgba(207,230,255,.25);
+    }
+    a:hover{ border-bottom-color: rgba(207,230,255,.55); }
+
+    .side{
+      border-radius: var(--radius);
+      padding:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(17,26,46,.55);
+    }
+    .side h3{
+      margin:0 0 8px;
+      font-size:14px;
+    }
+    .side p{
+      margin:0 0 10px;
+      color: var(--muted);
+      font-size:12.5px;
+      line-height:1.45;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(43,213,118,.45);
+      background: rgba(43,213,118,.10);
+      color:#c8f7de;
+      font-weight:700;
+      font-size:12px;
+      margin-top:8px;
+      width: fit-content;
+    }
+
+    /* Placeholder panels for other tabs */
+    .placeholder{
+      display:grid;
+      gap:14px;
+    }
+    .placeholder .card h2{ margin-top:0; }
+    .warn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,92,92,.45);
+      background: rgba(255,92,92,.10);
+      color:#ffd2d2;
+      font-weight:700;
+      font-size:12px;
+      width: fit-content;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>Тренажёр: определяем настоящий сайт</h1>
+        <div class="subtitle">
+          Вкладки сверху переключают «три сайта», которые открылись при попытке загрузить видео.
+          Настоящий сайт будет на <strong>второй вкладке</strong>. (Первые две вкладки пока можно оставить пустыми — мы добавим фишинговые версии позже.)
+        </div>
+      </div>
+      <div class="hint">Под GitHub Pages: сохрани как <strong>index.html</strong></div>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="Переключатель сайтов">
+      <button class="tab" role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false">
+        Сайт 1 <span class="pill">вариант</span>
+      </button>
+      <button class="tab" role="tab" id="tab-2" aria-controls="panel-2" aria-selected="true">
+        Сайт 2 <span class="pill good">MyVideo</span>
+      </button>
+      <button class="tab" role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false">
+        Сайт 3 <span class="pill">вариант</span>
+      </button>
+    </nav>
+
+    <!-- Panel 1 (placeholder) -->
+    <section class="panel" id="panel-1" role="tabpanel" aria-labelledby="tab-1" aria-hidden="true">
+      <div class="browserbar" aria-label="Адресная строка">
+        <div class="dots" aria-hidden="true">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+        <div class="address" title="https://example-login.myvideo.ru/">
+          <span class="lock">🔒</span>
+          https://example-login.myvideo.ru/
+        </div>
+      </div>
+
+      <div class="placeholder">
+        <div class="card">
+          <div class="warn">Пока заглушка</div>
+          <h2>Сайт 1 — здесь будет фишинговая версия</h2>
+          <p class="lead">В следующем шаге мы сделаем страницу похожей на MyVideo, но с ошибками в домене и/или подозрительными полями.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel 2 (REAL MyVideo) -->
+    <section class="panel" id="panel-2" role="tabpanel" aria-labelledby="tab-2" aria-hidden="false">
+      <div class="browserbar" aria-label="Адресная строка">
+        <div class="dots" aria-hidden="true">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+        <div class="address" title="https://myvideo.ru/login">
+          <span class="lock">🔒</span>
+          https://myvideo.ru/login
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="brand">
+            <div class="logo" aria-hidden="true"></div>
+            <div class="brandname">
+              <strong>MyVideo</strong>
+              <span>Платформа для загрузки и просмотра видео</span>
+            </div>
+          </div>
+
+          <h2>Вход в аккаунт</h2>
+          <p class="lead">
+            Войдите, чтобы загружать видео, управлять каналом и просматривать статистику.
+          </p>
+
+          <!-- Форма специально "не отправляет" данные (для учебного макета) -->
+          <form onsubmit="return false;" autocomplete="on">
+            <label for="login">Электронная почта или логин</label>
+            <input id="login" name="login" type="text" placeholder="example@mail.ru" />
+
+            <label for="pass">Пароль</label>
+            <input id="pass" name="password" type="password" placeholder="••••••••" />
+
+            <div class="row">
+              <label class="checkbox">
+                <input type="checkbox" name="remember" />
+                Запомнить меня
+              </label>
+
+              <button class="btn" type="submit">Войти</button>
+            </div>
+          </form>
+
+          <div class="foot">
+            <div class="links">
+              <a href="#" onclick="return false;">Забыли пароль?</a>
+              <a href="#" onclick="return false;">Регистрация</a>
+              <a href="#" onclick="return false;">Правила сервиса</a>
+              <a href="#" onclick="return false;">Политика конфиденциальности</a>
+              <a href="#" onclick="return false;">Поддержка</a>
+            </div>
+            <div>© MyVideo, 2025</div>
+          </div>
+        </div>
+
+        <aside class="side" aria-label="Информационный блок">
+          <h3>Подсказка для задания</h3>
+          <p>
+            Настоящие сайты обычно не просят лишние данные при входе (например, паспорт или SMS-код «сразу»),
+            используют защищённое соединение и имеют понятный адрес.
+          </p>
+          <p>
+            Этот макет — «эталон» настоящей страницы. Две другие вкладки мы превратим в фишинговые копии.
+          </p>
+          <div class="badge">🔒 Соединение защищено</div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Panel 3 (placeholder) -->
+    <section class="panel" id="panel-3" role="tabpanel" aria-labelledby="tab-3" aria-hidden="true">
+      <div class="browserbar" aria-label="Адресная строка">
+        <div class="dots" aria-hidden="true">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+        <div class="address" title="https://myvideo-security.ru/login">
+          <span class="lock">🔒</span>
+          https://myvideo-security.ru/login
+        </div>
+      </div>
+
+      <div class="placeholder">
+        <div class="card">
+          <div class="warn">Пока заглушка</div>
+          <h2>Сайт 3 — здесь будет фишинговая версия</h2>
+          <p class="lead">Сделаем другую «приманку»: например, лишние поля или пугающие сообщения («аккаунт заблокируют»).</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+      const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
+
+      function activateTab(tab) {
+        tabs.forEach(t => t.setAttribute('aria-selected', String(t === tab)));
+        panels.forEach(p => p.setAttribute('aria-hidden', String(p.id !== tab.getAttribute('aria-controls'))));
+        tab.focus();
+      }
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => activateTab(tab));
+        tab.addEventListener('keydown', (e) => {
+          const idx = tabs.indexOf(tab);
+          if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            activateTab(tabs[(idx + 1) % tabs.length]);
+          } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            activateTab(tabs[(idx - 1 + tabs.length) % tabs.length]);
+          } else if (e.key === 'Home') {
+            e.preventDefault();
+            activateTab(tabs[0]);
+          } else if (e.key === 'End') {
+            e.preventDefault();
+            activateTab(tabs[tabs.length - 1]);
+          }
+        });
+      });
+
+      // Открываем "настоящий" сайт на 2-й вкладке по умолчанию
+      const defaultTab = document.getElementById('tab-2');
+      activateTab(defaultTab);
+    })();
+  </script>
+</body>
+</html>
